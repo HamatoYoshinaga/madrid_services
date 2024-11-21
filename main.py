@@ -16,6 +16,8 @@ df = df[["Municipios", "Total"]]
 # Corregir formato
 df["CMUN28"] = df["Municipios"].str.extract(r"(\d+)").astype(int)
 df["CMUN"] = df["CMUN28"] % 1000
+# Esta linea sirve para extraer los nombres de los municipios del dataframe
+# pero por ahora no nos hace falta
 # df["Municipios"] = df["Municipios"].str.extract(r"([a-zA-ZñÑáéíóúÁÉÍÓÚ\s,]+)")
 
 # Importar fichero shapefile con pyshp
