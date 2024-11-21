@@ -1,0 +1,94 @@
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# macOS specific folders
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+.Dumpsters
+.DOCUMENT/Logs
+
+# Python-related files
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+*.egg
+*.egg-info
+*.cache
+__pycache__/
+*.py[cod]
+*.ipynb_checkpoints/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Virtual environments
+venv/
+env/
+ENV/
+.virtualenv/
+Pipfile
+Pipfile.lock
+
+# Data files
+*.csv
+*.tsv
+*.parquet
+*.hdf5
+*.sqlite
+*.db
+
+# Log files
+*.log
+*.out
+*.err
+
+# Large binary files (optional)
+*.mp4
+*.mov
+*.avi
+*.mkv
+
+# Temporary files or folders
+*.tmp
+*.swp
+*.bak
+*.old
+*.orig
+
+# IDE and editor-specific files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Machine learning specific
+*.model
+*.joblib
+*.pickle
+*.pkl
+
+# Results folders (optional, if generated during analysis)
+results/
+output/
+plots/
+figures/
+
+# Sensitive files
+*.env
+config.json
+secrets.json
+
+# R or RStudio (if applicable in your project)
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+
+# Other unnecessary files for Git tracking
+Thumbs.db
+desktop.ini
