@@ -1,7 +1,7 @@
 import pandas as pd
 import geopandas as gpd
 
-# Leer csv, este csv viene con datos de todos los años desde 1996
+# Leer csv, este fichero viene con datos de todos los años desde 1996
 # y con datos sobre la población masculina y femenina. Por eso lo filtramos
 df = pd.read_csv(
     "input_data/censoCM_INE.csv",
@@ -20,13 +20,6 @@ df["CMUN"] = df["CMUN28"] % 1000
 # pero por ahora no nos hace falta
 # df["Municipios"] = df["Municipios"].str.extract(r"([a-zA-ZñÑáéíóúÁÉÍÓÚ\s,]+)")
 
-# Importar fichero shapefile con pyshp
-# sf = shapefile.Reader("input_data/DatosNmc/nucl2023.shp")
-# list(sf.fields)
-
-# for feat in sf.iterShapeRecords():
-#     print(feat.record["ETIQUETA"])
-
 # Importar fichero shapefile de nucleos urbanos con geopandas
 gdf = gpd.read_file("input_data/DatosNmc/nucl2023.shp")
 # Filtrar por nucleos sin la etiqueta 'Diseminado'
@@ -43,7 +36,7 @@ gdf["CMUN"] = gdf["CMUN"].astype(int)
 gdf = gdf.merge(df, on="CMUN")
 
 # Descartar nucleos urbanos que pertenecen a municipios con más de 50k habitantes
-gdf = gdf.drop(columns=["CDENTIDAD", "CDNUCLEO", "CDTNUCLEO", "DESCR", "BUSCA"])
+gdf = gdf.drop(columns=["CDENTIDAD", "CDNUCLEO", "DESCR", "BUSCA"])
 gdf = gdf[gdf["poblacion_mun"] <= 50000]
 
 # Ordenar la tabla por municipios
@@ -70,6 +63,7 @@ hospitals = gpd.read_file("input_data/DatosNmc/hospital.shp")
 #         "UTM_Y",
 #     ]
 # )
+
 hospitals = hospitals.set_index("ETIQUETA")
 # Antes de calcular las distancias nos aseguramos que los GeoDataFrames tienen el mismo CRS
 gdf = gdf.to_crs(hospitals.crs)
@@ -96,24 +90,29 @@ nuc_hospital_pairs["distance"] = nuc_hospital_pairs.apply(
 # solo con los dos primeros
 
 nearest_hospitals = (
-    nuc_hospital_pairs.sort_values(["nuc_id", "distance"]).groupby("nuc_id").head(2)
+    nuc_hospital_pairs.sort_values(["nuc_id", "distance"]).groupby("nuc_id").head(6)
 )
 
-# Drop duplicate geometry columns from 'gdf' and 'hospitals' before merging
-# nearest_hospitals = nearest_hospitals.drop(
-#     columns=["geometry_nuc", "geometry_hospital"]
-# )
+# Volver a unir con las tablas originales para preservar alguna información necesaria
+nearest_hospitals = nearest_hospitals.merge(
+    gdf[["CDTNUCLEO", "CMUN", "nuc_id"]], on="nuc_id", suffixes=("", "_nuc")
+)
 
-# # Merge back with original GeoDataFrames to include all town and hospital information
-# nearest_hospitals = nearest_hospitals.merge(
-#     gdf[["mun_id", "geometry"]], on="mun_id", suffixes=("", "_town")
-# )
-# nearest_hospitals = nearest_hospitals.merge(
-#     hospitals[["hospital_id", "geometry"]],
-#     on="hospital_id",
-#     suffixes=("_mun", "_hospital"),
-# )
+nearest_hospitals = nearest_hospitals.merge(
+    hospitals[["CODIGO", "hospital_id"]],
+    on="hospital_id",
+    suffixes=("", "_hospital"),
+)
 
-# The result contains each town with its two nearest hospitals and all their information
+print("writing csv...")
+# Convertir la geometría a WKT
+gdf_csv = nearest_hospitals.copy()
+gdf_csv["geometry_nuc"] = gdf_csv["geometry_nuc"].apply(lambda x: x.wkt if x else None)
+gdf_csv["geometry_hospital"] = gdf_csv["geometry_hospital"].apply(
+    lambda x: x.wkt if x else None
+)
 
-print(nearest_hospitals)
+# Guardar como CSV para visualizar el output
+output_path = "output_data/distancias_nuc_hos.csv"
+gdf_csv.to_csv(output_path, index=False)
+print(f"output saved to {output_path}")
