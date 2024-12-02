@@ -15,7 +15,7 @@ distancias_clean.sort_values(by="CODIGO", ascending=True, inplace=True)
 # Unimos las tablas asociando cada población a nucleo urbano y su hospital
 hospitales_municipios_poblaciones = distancias_clean.merge(censo, on="CMUN")
 
-# Select age group columns
+# Seleccionar las columnas de poblacion por edades
 age_columns = [
     "Total",
     "0 a 4",
@@ -41,10 +41,9 @@ age_columns = [
     "100 o más",
 ]
 
-# Group by 'city' and sum the age group columns
+# Agrupar por hospitales y sumar las poblaciones
 hospital_population = (
     hospitales_municipios_poblaciones.groupby("CODIGO")[age_columns].sum().reset_index()
 )
 
-# Display the result
 print(hospital_population)
