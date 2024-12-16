@@ -1,14 +1,22 @@
 import geopandas as gpd
 
 consultorios = gpd.read_file("input_data/DatosNmc/consultoriosalud.shp")
-# consultorios = consultorios.drop(
-#     columns=["TIPOVIA", "NOMVIA", "DESCR", "TIPON", "BUSCA", "NIF", "NUMERO", "CMUN",'MUNICIPIO','CD_VIAL']
-# )
-print(consultorios.columns)
-# print(consultorios)
-# print("########################################")
+output_path = "output_data/consultorios.csv"
+consultorios.to_csv(output_path, index=False)
+print(f"output saved to {output_path}")
+
 centros_salud = gpd.read_file("input_data/DatosNmc/centrosalud.shp")
-print(centros_salud.columns)
-# print("########################################")
+output_path = "output_data/centros_salud.csv"
+centros_salud.to_csv(output_path, index=False)
+print(f"output saved to {output_path}")
+
 hospitales = gpd.read_file("input_data/DatosNmc/hospital.shp")
-print(hospitales.columns)
+output_path = "output_data/hospitales.csv"
+hospitales.to_csv(output_path, index=False)
+print(f"output saved to {output_path}")
+
+zonasalud = gpd.read_file("input_data/DatosNmc/zonasaludunica.shp")
+zonasalud = zonasalud.drop(columns=["geometry"])
+output_path = "output_data/zonasalud.csv"
+zonasalud.to_csv(output_path, index=False)
+print(f"output saved to {output_path}")
