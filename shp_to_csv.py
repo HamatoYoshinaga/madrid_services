@@ -1,8 +1,16 @@
 import geopandas as gpd
 
-consultorios = gpd.read_file("input_data/DatosNmc/consultoriosalud.shp")
-link_consultorios = consultorios[["ETIQUETA", "URL"]]
-link_consultorios.to_csv("output_data//link_consultorios.csv", index=False)
+municipios = gpd.read_file("input_data/DatosNmc/muni2023.shp")
+municipios.to_csv("output_data/municipios.csv")
+print("File saved to output_data/municipios.csv")
+
+# nucleourbano = gpd.read_file("input_data/DatosNmc/nucl2023.shp")
+# nucleourbano.to_csv("output_data/nucleosurbanos.csv")
+# print("File saved to output_data/nucleosurbanos.csv")
+
+# consultorios = gpd.read_file("input_data/DatosNmc/consultoriosalud.shp")
+# link_consultorios = consultorios[["ETIQUETA", "URL"]]
+# link_consultorios.to_csv("output_data//link_consultorios.csv", index=False)
 # output_path = "output_data/consultorios.csv"
 # consultorios.to_csv(output_path, index=False)
 # print(f"output saved to {output_path}")
