@@ -16,7 +16,7 @@ df = df[["Municipios", "Total"]]
 # Corregir formato
 df["CMUN28"] = df["Municipios"].str.extract(r"(\d+)").astype(int)
 df["CMUN"] = df["CMUN28"] % 1000
-# Esta linea sirve para extraer los nombres de los municipios del dataframe
+# La siguiente linea sirve para extraer los nombres de los municipios del dataframe
 # pero por ahora no nos hace falta
 # df["Municipios"] = df["Municipios"].str.extract(r"([a-zA-ZñÑáéíóúÁÉÍÓÚ\s,]+)")
 
@@ -26,13 +26,14 @@ gdf = gpd.read_file("input_data/DatosNmc/nucl2023.shp")
 gdf["CDNUCLEO"] = gdf["CDNUCLEO"].astype(int)
 gdf = gdf[gdf["CDNUCLEO"] != 99]
 
-# Juntar las dos tablas de censo y shapefile
+# Formatear las tablas de censo y nucleos urbanos
 df.rename(columns={"Total": "poblacion_mun"}, inplace=True)
 df["poblacion_mun"] = df["poblacion_mun"].apply(
     lambda x: int(x.replace(".", ""))
 )  # quitar puntos y pasar a int
 df = df[["poblacion_mun", "CMUN"]]
 gdf["CMUN"] = gdf["CMUN"].astype(int)
+# Unir las dos tablas
 gdf = gdf.merge(df, on="CMUN")
 
 # Descartar nucleos urbanos que pertenecen a municipios con más de 50k habitantes
